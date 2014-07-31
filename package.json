@@ -1,0 +1,24 @@
+{
+  "name": "personal-api",
+  "version": "1.0.0",
+  "description": "i love you",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/cguanzon/personal-api.git"
+  },
+  "author": "Caleb Guanzon",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/cguanzon/personal-api/issues"
+  },
+  "homepage": "https://github.com/cguanzon/personal-api",
+  "dependencies": {
+    "body-parser": "^1.5.2",
+    "express": "^4.7.2",
+    "ls": "^0.1.0"
+  }
+}
