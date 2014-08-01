@@ -33,6 +33,25 @@ var skills = [
 	}				
 ];
 
+/*
+This checks the if the :id exists in the skills collection.
+- Returns the position of the skill object in the skills array 
+	if the id exists.
+- Sets the response status to 404 if the id does not exist
+*/
+var validateSkillId = function(req, res, paramId){
+	var id = parseInt(req.params.id);
+	for(var i = 0; i < skills.length; i++){
+		var skillId = skills[i].id;
+		if(skillId === parseInt(id)){
+			return i;
+		}
+	}
+	res.status(404).json(
+		{message: 'The skill id you provided does not exist.'
+	});
+};
+
 
 
 //server initialization
@@ -168,12 +187,9 @@ app.get('/skills', function(req, res){
 });
 
 app.get('/skills/:id', function(req, res){
-	var id = req.params.id;
-	for(var i = 0; i < skills.length; i++){
-		var skillId = skills[i].id;
-		if(skillId === parseInt(id)){
-			res.status(201).json({ skill: skills[i] });
-		}
+	var skill = skills[validateSkillId(req,res, req.params.id)];
+	if(skill){	
+		res.status(200).json(skill);
 	}
 });
 
@@ -188,21 +204,34 @@ app.post('/skills', function(req, res){
 	res.status(201).json(skill);
 });
 
-//You cannot change the id. This is on purpose
+//You cannot change the id. This is on purpose.
 app.put('/skills/:id', function(req, res){
-	var id = req.params.id;
-	for(var i = 0; i < skills.length; i++){
-		var skill = skills[i];
-		var skillId = skills[i].id;
-		if(skillId === parseInt(id)){
-			if(req.body.name){
-				skill.name = req.body.name
-			}
-			if(req.body.experience){
-				skill.experience = req.body.experience;
-			}
-			res.status(200).json({skill: skills[i]});
+	var skill = skills[validateSkillId(req,res, req.params.id)];
+	if(skill){	
+		if(req.body.name){
+			skill.name = req.body.name
 		}
+		if(req.body.experience){
+			skill.experience = req.body.experience;
+		}
+		res.status(200).json(skill);
+	}
+});
+
+app.delete('/skills/:id', function(req, res){
+	// var id = req.params.id;
+	// for(var i = 0; i < skills.length; i++){
+	// 	var skill = skills[i];
+	// 	var skillId = skills[i].id;
+	// 	if(skillId === parseInt(id)){
+	// 		skills.splice()
+	// 		res.status(200).json({skill: skills[i]});
+	// 	}
+	// }
+	var position = validateSkillId(req,res, req.params.id);
+	if(position+1){
+		skills.splice(position,1);
+		res.status(200).json({message: 'Successfully deleted.'});
 	}
 });
 
