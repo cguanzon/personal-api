@@ -1,10 +1,10 @@
 //data variables
-var name = 'Caleb Guanzon';
-var location = 'Salt Lake City, UT';
-var hobbies = ['coding', 'ninja-warrior-training', 'running', 'javascript'];
-var occupations = ['QA Engineer', 'Web Developer', 'Ninja Warrior', 'Sasuke Master'];
-var mentions = ['http://cguanzon.github.io', 'https://www.linkedin.com/pub/caleb-guanzon/6a/116/405'];
-var friends = ['Darth Vader', 'Tywin Lannister', 'Oberyn Martell', 'Iron Man'];
+var name = 'Tyrion Lannister';
+var location = 'Essos';
+var hobbies = ['reading', 'writing', 'drinking', 'girls'];
+var occupations = ['Acting Hand of the King', 'Maester of the Coin', 'Fugitive', 'Second Son'];
+var mentions = ['Game of Thrones', 'A Clash of Kings', 'A Storm of Swords', 'A Feast for Crows', 'A Dance with Dragons'];
+var friends = ['Bronn', 'Jaime Lannister', 'Oberyn Martell', 'Varys'];
 var skills = [
 	{
 		id: 1,
@@ -219,15 +219,6 @@ app.put('/skills/:id', function(req, res){
 });
 
 app.delete('/skills/:id', function(req, res){
-	// var id = req.params.id;
-	// for(var i = 0; i < skills.length; i++){
-	// 	var skill = skills[i];
-	// 	var skillId = skills[i].id;
-	// 	if(skillId === parseInt(id)){
-	// 		skills.splice()
-	// 		res.status(200).json({skill: skills[i]});
-	// 	}
-	// }
 	var position = validateSkillId(req,res, req.params.id);
 	if(position+1){
 		skills.splice(position,1);
