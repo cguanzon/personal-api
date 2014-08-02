@@ -1,3 +1,18 @@
+//server initialization
+var express = require('express');
+var bodyParser = require('body-parser');
+var app = express();
+
+//middleware
+app.use(bodyParser.json());
+
+app.use(function(req, res, next) {
+	res.header('Access-Control-Allow-Origin', '*');
+	res.header('Access-Control-Allow-Methods', 'OPTIONS, GET, POST');
+	res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
+	next();
+});
+
 //data variables
 var name = 'Tyrion Lannister';
 var location = 'Essos';
@@ -33,6 +48,7 @@ var skills = [
 	}				
 ];
 
+//functions
 /*
 This checks the if the :id exists in the skills collection.
 - Returns the position of the skill object in the skills array 
@@ -84,23 +100,8 @@ var orderArray = function(array, order){
 	}
 };
 
-
-//server initialization
-var express = require('express');
-var bodyParser = require('body-parser');
-var app = express();
-
-//middleware
-app.use(bodyParser.json());
-
-app.use(function(req, res, next) {
-	res.header('Access-Control-Allow-Origin', '*');
-	res.header('Access-Control-Allow-Methods', 'OPTIONS, GET, POST');
-	res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
-	next();
-});
-
 //API methods
+//GET's
 app.get('/name', function(req, res){
 	res.status(200).json({name: name});
 });
@@ -133,22 +134,10 @@ app.get('/mentions', function(req, res){
 	res.status(200).json({mentions: orderedArray});
 });
 
-app.post('/mentions', function(req, res){
-	var mention = req.body.mention;
-	mentions.push(mention);
-	res.status(201).json(req.body);
-});
-
 app.get('/friends', function(req, res){
 	var order = req.query.order;
 	var orderedArray = orderArray(friends, order);
 	res.status(200).json({friends: orderedArray});
-});
-
-app.post('/friends', function(req, res){
-	var friend = req.body.friend;
-	friends.push(friend);
-	res.status(201).json(req.body);
 });
 
 app.get('/skills', function(req, res){
@@ -168,6 +157,19 @@ app.get('/skills/:id', function(req, res){
 	}
 });
 
+//POST's
+app.post('/mentions', function(req, res){
+	var mention = req.body.mention;
+	mentions.push(mention);
+	res.status(201).json(req.body);
+});
+
+app.post('/friends', function(req, res){
+	var friend = req.body.friend;
+	friends.push(friend);
+	res.status(201).json(req.body);
+});
+
 app.post('/skills', function(req, res){
 	var skill = 
 		{
@@ -179,7 +181,12 @@ app.post('/skills', function(req, res){
 	res.status(201).json(skill);
 });
 
-//You cannot change the id. This is on purpose.
+//PUT's
+/*
+You cannot change the id. This is on purpose.
+You can edit the name and/or experience
+Pass only the key(s) that you want to change
+*/
 app.put('/skills/:id', function(req, res){
 	var skill = skills[validateSkillId(req,res, req.params.id)];
 	if(skill){	
@@ -193,6 +200,7 @@ app.put('/skills/:id', function(req, res){
 	}
 });
 
+//DELETE's
 app.delete('/skills/:id', function(req, res){
 	var position = validateSkillId(req,res, req.params.id);
 	if(position+1){
