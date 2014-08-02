@@ -48,10 +48,41 @@ var validateSkillId = function(req, res, paramId){
 		}
 	}
 	res.status(404).json(
-		{message: 'The skill id you provided does not exist.'
-	});
+		{
+			message: 'The skill id you provided does not exist.'
+		});
 };
 
+/*
+Filters an array by the filterParam and the filterValue
+Returns a filtered version of the array
+*/
+var filterBy = function(array, filterParam, filterValue){
+	var filteredArray = [];
+	for(var i = 0; i < array.length; i++){
+		if(array[i][filterParam] === filterValue){
+			filteredArray.push(array[i]);
+		}
+	}
+	return filteredArray;
+};
+
+/*
+This accepts an array and an order value. 
+It will return a copy of the array in the order
+that was specified
+*/
+var orderArray = function(array, order){
+	var mutateableArray = array.slice(0);
+
+	if(order === 'asc'){
+		return mutateableArray.sort()
+	}else if(order === 'desc'){
+		return mutateableArray.sort().reverse();
+	}else{
+		return mutateableArray;
+	}
+};
 
 
 //server initialization
@@ -79,63 +110,27 @@ app.get('/location', function(req, res){
 });
 
 app.get('/hobbies', function(req, res){
-	var mutateableArray = hobbies.slice(0);
-
-	if(req.query.order === 'asc'){
-		res.status(200).json({
-			hobbies: mutateableArray.sort()
-		});
-	}else if(req.query.order === 'desc'){
-		res.status(200).json({
-			hobbies: mutateableArray.sort().reverse()
-		});
-	}else{
-		res.status(200).json({
-			hobbies: mutateableArray
-		});
-	}
+	var order = req.query.order;
+	var orderedArray = orderArray(hobbies, order);
+	res.status(200).json({hobbies: orderedArray});
 });
 
 app.get('/occupations', function(req, res){
-	var mutateableArray = occupations.slice(0);
-
-	if(req.query.order === 'asc'){
-		res.status(200).json({
-			occupations: mutateableArray.sort()
-		});
-	}else if(req.query.order === 'desc'){
-		res.status(200).json({
-			occupations: mutateableArray.sort().reverse()
-		});
-	}else{
-		res.status(200).json({
-			occupations: mutateableArray
-		});
-	}
+	var order = req.query.order;
+	var orderedArray = orderArray(occupations, order);
+	res.status(200).json({occupations: orderedArray});
 });
 
 app.get('/occupations/latest', function(req, res){
 	res.status(200).json({
-		latestOcuupation: occupations.occupations[occupations.occupations.length-1]
+		latestOcuupation: occupations[occupations.length-1]
 	});
 });
 
 app.get('/mentions', function(req, res){
-	var mutateableArray = mentions.slice(0);
-
-	if(req.query.order === 'asc'){
-		res.status(200).json({
-			mentions: mutateableArray.sort()
-		});
-	}else if(req.query.order === 'desc'){
-		res.status(200).json({
-			mentions: mutateableArray.sort().reverse()
-		});
-	}else{
-		res.status(200).json({
-			mentions: mutateableArray
-		});
-	}
+	var order = req.query.order;
+	var orderedArray = orderArray(mentions, order);
+	res.status(200).json({mentions: orderedArray});
 });
 
 app.post('/mentions', function(req, res){
@@ -145,21 +140,9 @@ app.post('/mentions', function(req, res){
 });
 
 app.get('/friends', function(req, res){
-	var mutateableArray = friends.slice(0);
-
-	if(req.query.order === 'asc'){
-		res.status(200).json({
-			friends: mutateableArray.sort()
-		});
-	}else if(req.query.order === 'desc'){
-		res.status(200).json({
-			friends: mutateableArray.sort().reverse()
-		});
-	}else{
-		res.status(200).json({
-			friends: mutateableArray
-		});
-	}
+	var order = req.query.order;
+	var orderedArray = orderArray(friends, order);
+	res.status(200).json({friends: orderedArray});
 });
 
 app.post('/friends', function(req, res){
@@ -169,21 +152,13 @@ app.post('/friends', function(req, res){
 });
 
 app.get('/skills', function(req, res){
-	var mutateableArray = skills.slice(0);
-
-	if(req.query.order === 'asc'){
-		res.status(200).json({
-			skills: mutateableArray.sort()
-		});
-	}else if(req.query.order === 'desc'){
-		res.status(200).json({
-			skills: mutateableArray.sort().reverse()
-		});
-	}else{
-		res.status(200).json({
-			skills: mutateableArray
-		});
+	var filteredArray = skills;
+	if(req.query.experience){
+		var filteredArray = filterBy(skills, 'experience', req.query.experience);
 	}
+	var order = req.query.order;
+	var orderedArray = orderArray(filteredArray, order);
+	res.status(200).json({skills: orderedArray});
 });
 
 app.get('/skills/:id', function(req, res){
